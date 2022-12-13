@@ -3,10 +3,6 @@
 import sys
 
 
-def get_assignment(assignment_string: str) -> list[int]:
-    pass
-
-
 def get_assignment_pair(pair_string: str) -> list[int]:
 
     # starts as strings, converted to ints during parsing
