@@ -14,8 +14,6 @@ class FileSystem:
         parent: Union[FileSystem.Directory, None]
         sub_dirs: dict[str,FileSystem.Directory] = field(default_factory=dict)
         files: dict[str,FileSystem.File] = field(default_factory=dict)
-        # not live updated
-        size: int = 0
 
     @dataclass
     class File:
