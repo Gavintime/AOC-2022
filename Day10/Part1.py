@@ -17,7 +17,7 @@ def get_signal_strength_sum(insts: list[str]) -> int:
     addx_processing = False
     inst_index = 0
     while True:
-        
+
         cycle_count += 1
 
         if (cycle_count) % 40 == 0:
