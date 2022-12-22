@@ -1,6 +1,44 @@
 #!/usr/bin/env python3
 
+from __future__ import annotations
 import sys
+from collections import deque
+from dataclasses import dataclass
+from typing import Union
+
+
+
+class Monkey:
+
+    @dataclass
+    class Test:
+        condition: int
+        true_monkey: int
+        false_monkey: int
+
+    def __init__(self,
+                 items: deque[int],
+                 operation: tuple[Union[str, int], str, Union[str, int]],
+                 test: Monkey.Test):
+        self.items: deque[int] = items
+        self.operation: tuple[Union[str, int], str, Union[str, int]] = operation
+        self.test: Monkey.Test = test
+
+    # inspect (pop) current item, do the operation, divide by 3,
+    # then return the item and a number representing which monkey it should be
+    # thrown to
+    def inspect_process(self) -> tuple[int, int]:
+
+        item_and_target: tuple
+        item_and_target = (0, 0)
+
+        item = self.items.pop()
+
+
+
+
+        return item_and_target
+
 
 
 def main():
