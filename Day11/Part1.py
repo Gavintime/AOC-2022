@@ -4,6 +4,7 @@ from __future__ import annotations
 import sys
 from collections import deque
 from dataclasses import dataclass
+from heapq import nlargest
 
 
 class Monkey:
@@ -21,6 +22,7 @@ class Monkey:
         self.items: deque[int] = items
         self.operation: tuple[str, str, str] = operation
         self.test: Monkey.Test = test
+        self.inspect_count: int = 0
 
     def __str__(self) -> str:
         print_string = "Monkey x:\n  Starting items: "
@@ -40,6 +42,7 @@ class Monkey:
     # inspect (pop) current item, do the inspect operation, floor divide by 3,
     # then return the item and a number representing which monkey it should be
     # thrown to based on divisibility condition
+    # also increments inspect count
     def inspect_test_throw(self) -> tuple[int, int]:
 
         item = self.items.popleft()
@@ -73,6 +76,8 @@ class Monkey:
             target_monkey = self.test.true_monkey
         else:
             target_monkey = self.test.false_monkey
+
+        self.inspect_count += 1
 
         return (item, target_monkey)
 
@@ -178,6 +183,27 @@ def parse_monkeys(monkey_strs: list[str]) -> list[Monkey]:
     return monkey_list
 
 
+def get_monkey_buisiness(monkeys: list[Monkey], rounds: int) -> int:
+
+    # conduct the rounds one at a time
+    for _ in range(rounds):
+        # give each monkey a turn each round
+        for monkey in monkeys:
+            # let each monkey each round inspect and throw all their items
+            # during their turn
+            while len(monkey.items) > 0:
+                thrown_item, target_monkey = monkey.inspect_test_throw()
+                monkeys[target_monkey].items.append(thrown_item)
+
+    # find the two most active monkeys and multiply their inspect counts together
+    inspect_counts = []
+    for monkey in monkeys:
+        inspect_counts.append(monkey.inspect_count)
+    two_largest = nlargest(2, inspect_counts)
+
+    return two_largest[0] * two_largest[1]
+
+
 def main():
 
     # get filename
@@ -201,8 +227,9 @@ def main():
 
 
     monkeys = parse_monkeys(lines)
-    for monkey in monkeys:
-        print(monkey)
+    # for monkey in monkeys:
+    #     print(monkey)
+    print(get_monkey_buisiness(monkeys, 20))
 
 
 if __name__ == '__main__':
