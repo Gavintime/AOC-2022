@@ -4,8 +4,6 @@ from __future__ import annotations
 import sys
 from collections import deque
 from dataclasses import dataclass
-from typing import Union
-
 
 
 class Monkey:
@@ -18,26 +16,50 @@ class Monkey:
 
     def __init__(self,
                  items: deque[int],
-                 operation: tuple[Union[str, int], str, Union[str, int]],
+                 operation: tuple[str, str, str],
                  test: Monkey.Test):
         self.items: deque[int] = items
-        self.operation: tuple[Union[str, int], str, Union[str, int]] = operation
+        self.operation: tuple[str, str, str] = operation
         self.test: Monkey.Test = test
 
-    # inspect (pop) current item, do the operation, divide by 3,
+    # inspect (pop) current item, do the inspect operation, floor divide by 3,
     # then return the item and a number representing which monkey it should be
-    # thrown to
-    def inspect_process(self) -> tuple[int, int]:
+    # thrown to based on divisibility condition
+    def inspect_test_throw(self) -> tuple[int, int]:
 
-        item_and_target: tuple
-        item_and_target = (0, 0)
+        item = self.items.popleft()
 
-        item = self.items.pop()
+        # set operation operands
+        left_operand = 0
+        right_operand = 0
+        if self.operation[0] == 'old':
+            left_operand = item
+        else:
+            left_operand = int(self.operation[0])
+        if self.operation[2] == 'old':
+            right_operand = item
+        else:
+            right_operand = int(self.operation[2])
 
+        # apply the inspection operation
+        if self.operation[1] == '+':
+            item = left_operand + right_operand
+        # operator must be *
+        else:
+            item = left_operand * right_operand
 
+        # apply relief floor division
+        item //= 3
 
+        # conduct the monkeys test to find the target monkey for the throw
+        # the test is always a divisibility test
+        target_monkey = 0
+        if item % self.test.condition == 0:
+            target_monkey = self.test.true_monkey
+        else:
+            target_monkey = self.test.false_monkey
 
-        return item_and_target
+        return (item, target_monkey)
 
 
 
